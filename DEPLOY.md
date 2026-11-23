@@ -62,7 +62,8 @@ would otherwise let anyone into the console). Visitors are told to use made-up d
 
 ## 2. Vercel (front end)
 
-1. Put your Railway domain into [vercel.json](vercel.json): replace both `YOUR-RAILWAY-APP.up.railway.app`, commit, push.
+1. [vercel.json](vercel.json) forwards `/v1/*` to the Railway domain (`happy-smile-production-f9599d2d.up.railway.app`).
+   If the Railway domain ever changes, update both lines there, commit and push.
 2. https://vercel.com → **Add New → Project** → import `Happy-Smile`.
    - **Root Directory**: leave as the repository root
    - **Framework Preset**: Other (build command and output folder come from `vercel.json`)

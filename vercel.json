@@ -4,8 +4,8 @@
   "buildCommand": "rm -rf vercel-dist && mkdir -p vercel-dist && cp -r backend/happysmile/static vercel-dist/static",
   "outputDirectory": "vercel-dist",
   "rewrites": [
-    { "source": "/v1/:path*", "destination": "https://YOUR-RAILWAY-APP.up.railway.app/v1/:path*" },
-    { "source": "/healthz", "destination": "https://YOUR-RAILWAY-APP.up.railway.app/healthz" },
+    { "source": "/v1/:path*", "destination": "https://happy-smile-production-f9599d2d.up.railway.app/v1/:path*" },
+    { "source": "/healthz", "destination": "https://happy-smile-production-f9599d2d.up.railway.app/healthz" },
     { "source": "/console", "destination": "/static/console/index.html" },
     { "source": "/voice", "destination": "/static/voice/index.html" },
     { "source": "/", "destination": "/static/enquiry/index.html" }

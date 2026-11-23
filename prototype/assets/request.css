@@ -1,0 +1,98 @@
+/* Screen 1 — Request a call (mobile first, ~390px) */
+
+body { background: var(--bg); }
+.page { max-width: 440px; margin: 0 auto; padding: 16px 16px 32px; }
+
+.brand-bar { display: flex; align-items: center; justify-content: space-between; padding: 4px 2px 14px; }
+.wordmark { display: flex; flex-direction: column; line-height: 1.15; }
+.wordmark-name { font-weight: 700; font-size: 19px; color: var(--primary); letter-spacing: 0.2px; }
+.wordmark-sub { font-size: 12px; color: var(--muted); }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 18px; box-shadow: var(--shadow); }
+h1 { font-size: 23px; margin-bottom: 6px; }
+.lead { color: var(--muted); margin: 0 0 20px; }
+fieldset { border: 0; padding: 0; margin: 0 0 18px; min-width: 0; }
+
+/* Segmented control */
+.segmented { display: inline-flex; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); overflow: hidden; background: var(--surface); }
+.segmented label { position: relative; cursor: pointer; }
+.segmented input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.segmented span { display: block; padding: 9px 18px; font-weight: 600; font-size: 14px; color: var(--muted); }
+.segmented label + label span { border-left: 1px solid var(--border-strong); }
+.segmented input:checked + span { background: var(--primary); color: #fff; }
+.segmented input:focus-visible + span { box-shadow: inset var(--focus); }
+.segmented-sm span { padding: 5px 10px; font-size: 12px; }
+
+/* Phone input */
+.phone-input { display: flex; }
+.phone-prefix {
+  display: flex; align-items: center; padding: 0 12px;
+  border: 1px solid var(--border-strong); border-right: 0; border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  background: var(--surface-2); color: var(--muted); font-weight: 600;
+}
+.phone-input .input { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+
+/* Treatment chips */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { position: relative; cursor: pointer; }
+.chip input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.chip span {
+  display: inline-block; padding: 8px 14px; border-radius: 999px;
+  border: 1px solid var(--border-strong); font-size: 14px; font-weight: 600; color: var(--text); background: var(--surface);
+}
+.chip input:checked + span { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
+.chip input:focus-visible + span { box-shadow: var(--focus); }
+.other-wrap { margin-top: 10px; }
+
+/* Contact preference options */
+.options { display: flex; flex-direction: column; gap: 8px; }
+.option {
+  display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; cursor: pointer;
+  border: 1px solid var(--border-strong); border-radius: var(--radius); background: var(--surface);
+}
+.option input { margin-top: 3px; width: 18px; height: 18px; accent-color: var(--primary); flex: none; }
+.option:has(input:checked) { border-color: var(--primary); background: var(--primary-soft); }
+.option-body { display: flex; flex-direction: column; }
+.option-title { font-weight: 600; }
+.option-sub { font-size: 13px; color: var(--muted); }
+.schedule { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+
+/* Disclosure + consent */
+.disclosure {
+  border-left: 4px solid var(--primary); background: var(--primary-soft);
+  padding: 12px 14px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-bottom: 16px; font-size: 14px;
+}
+.disclosure strong { white-space: nowrap; }
+.consent { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; margin-bottom: 18px; cursor: pointer; }
+.consent input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--primary); flex: none; }
+.submit-hint { text-align: center; margin-top: 8px; }
+
+/* Confirmation */
+.confirm-head { text-align: center; }
+.confirm-icon {
+  display: inline-flex; width: 52px; height: 52px; border-radius: 50%; align-items: center; justify-content: center;
+  background: var(--primary-soft); color: var(--primary); margin-bottom: 10px;
+}
+.confirm-icon svg { width: 26px; height: 26px; }
+.countdown { text-align: center; margin: 4px 0 18px; }
+.countdown-time { font-size: 46px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--primary); line-height: 1.1; }
+.countdown-label { color: var(--muted); font-size: 14px; }
+.caller-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; text-align: center; background: var(--surface-2); margin-bottom: 18px; }
+.caller-label { font-size: 13px; color: var(--muted); }
+.caller-number { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; margin: 2px 0; }
+.expect-title { font-size: 16px; margin-bottom: 8px; }
+.expect { margin: 0 0 20px; padding-left: 20px; }
+.expect li { margin-bottom: 6px; }
+.confirm-actions { display: flex; gap: 16px; align-items: center; justify-content: center; flex-wrap: wrap; }
+
+/* Footer */
+.footer { text-align: center; padding-top: 18px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.staff-link { font-weight: 600; }
+.staff-link::after { content: " \2192"; }
+.proto-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.proto-note { margin: 0; }
+
+@media (max-width: 360px) {
+  .card { padding: 18px 14px; }
+  .schedule { grid-template-columns: 1fr; }
+}

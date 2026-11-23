@@ -1,0 +1,12 @@
+# Real HappySmile exports contain personal data: never commit them.
+discovery/baseline/data/
+discovery/baseline/reports/baseline_report.md
+*.xlsx
+
+# Secrets
+.env
+*.key
+
+# Python
+__pycache__/
+*.pyc

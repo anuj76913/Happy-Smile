@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Request a Call</title>
+  <meta name="description" content="Ask HappySmile to call you about braces, whitening, implants and more.">
+  <link rel="stylesheet" href="/static/shared/styles.css">
+  <link rel="stylesheet" href="/static/shared/voicecall.css">
+  <link rel="stylesheet" href="/static/enquiry/enquiry.css">
+</head>
+<body>
+  <div class="page">
+    <header class="brand-bar">
+      <div class="wordmark">
+        <span class="wordmark-name">HappySmile</span>
+        <span class="wordmark-sub" data-i18n="brandSub">Dental clinics</span>
+      </div>
+    </header>
+
+    <main class="card" id="main">
+      <p class="notice-inline" id="load-error" hidden></p>
+
+      <section id="form-view" aria-labelledby="form-title">
+        <h1 id="form-title" data-i18n="title">Request a call</h1>
+        <p class="lead" data-i18n="subtitle">Tell us what you are interested in and we will call you back.</p>
+
+        <form id="request-form" novalidate>
+          <fieldset class="field">
+            <legend class="label" data-i18n="langLabel">Language for the call</legend>
+            <div class="segmented">
+              <label><input type="radio" name="lang" value="en" checked><span>English</span></label>
+              <label><input type="radio" name="lang" value="hi"><span>हिन्दी</span></label>
+            </div>
+          </fieldset>
+
+          <div class="field">
+            <label class="label" for="name" data-i18n="nameLabel">Your name</label>
+            <input class="input" id="name" name="name" autocomplete="name" maxlength="60" aria-describedby="name-error">
+            <div class="error" id="name-error" hidden></div>
+          </div>
+
+          <div class="field">
+            <label class="label" for="mobile" data-i18n="mobileLabel">Mobile number</label>
+            <div class="phone-input">
+              <span class="phone-prefix" aria-hidden="true">+91</span>
+              <input class="input" id="mobile" name="mobile" type="tel" inputmode="numeric" autocomplete="tel-national"
+                     maxlength="16" aria-describedby="mobile-hint mobile-error">
+            </div>
+            <div class="hint" id="mobile-hint" data-i18n="mobileHint">10-digit Indian mobile number</div>
+            <div class="error" id="mobile-error" hidden></div>
+          </div>
+
+          <fieldset class="field">
+            <legend class="label" data-i18n="treatmentLabel">What are you interested in?</legend>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="treatment" value="braces" checked><span data-i18n="tBraces">Braces / aligners</span></label>
+              <label class="chip"><input type="radio" name="treatment" value="whitening"><span data-i18n="tWhitening">Whitening</span></label>
+              <label class="chip"><input type="radio" name="treatment" value="implants"><span data-i18n="tImplants">Implants</span></label>
+              <label class="chip"><input type="radio" name="treatment" value="other"><span data-i18n="tOther">Other</span></label>
+            </div>
+            <div id="other-wrap" class="other-wrap" hidden>
+              <label class="visually-hidden" for="other" data-i18n="otherLabel">Tell us briefly</label>
+              <input class="input" id="other" name="other" maxlength="80" data-i18n-placeholder="otherPlaceholder">
+            </div>
+          </fieldset>
+
+          <div class="field">
+            <label class="label" for="clinic" data-i18n="clinicLabel">Nearest clinic</label>
+            <select class="select" id="clinic" name="clinic" aria-describedby="clinic-error">
+              <option value="" data-i18n="clinicPlaceholder">Choose a clinic</option>
+            </select>
+            <div class="error" id="clinic-error" hidden></div>
+            <p class="demo-hint" id="clinic-demo-hint" hidden></p>
+          </div>
+
+          <fieldset class="field">
+            <legend class="label" data-i18n="prefLabel">How should we contact you?</legend>
+            <div class="options">
+              <label class="option">
+                <input type="radio" name="pref" value="now" checked>
+                <span class="option-body"><span class="option-title" id="pref-now-title"></span><span class="option-sub" id="pref-now-sub"></span></span>
+              </label>
+              <label class="option">
+                <input type="radio" name="pref" value="scheduled">
+                <span class="option-body"><span class="option-title" data-i18n="prefLater">Call me at a time I pick</span><span class="option-sub" data-i18n="prefLaterSub">Between 9 am and 9 pm</span></span>
+              </label>
+              <label class="option">
+                <input type="radio" name="pref" value="whatsapp">
+                <span class="option-body"><span class="option-title" data-i18n="prefWa">WhatsApp me instead</span><span class="option-sub" data-i18n="prefWaSub">No call. Our team replies on WhatsApp</span></span>
+              </label>
+            </div>
+            <div id="schedule-wrap" class="schedule" hidden>
+              <div><label class="label" for="sched-day" data-i18n="dayLabel">Day</label><select class="select" id="sched-day"></select></div>
+              <div><label class="label" for="sched-time" data-i18n="timeLabel">Time</label><select class="select" id="sched-time"></select></div>
+            </div>
+            <div class="error" id="scheduled_at-error" hidden></div>
+          </fieldset>
+
+          <div class="disclosure" id="disclosure" aria-live="polite" tabindex="-1"></div>
+          <p class="notice-inline" id="wording-changed" hidden data-i18n="wordingChanged">The wording above was just updated. Please read it and tick the box again.</p>
+
+          <label class="consent">
+            <input type="checkbox" id="consent">
+            <span id="consent-text"></span>
+          </label>
+
+          <button class="btn btn-primary btn-block" type="submit" id="submit" disabled></button>
+          <p class="hint submit-hint" id="submit-hint" data-i18n="submitHint">Tick the box above to continue.</p>
+          <p class="notice-inline" id="submit-error" role="alert" hidden></p>
+        </form>
+      </section>
+
+      <section id="confirm-view" hidden aria-labelledby="confirm-title">
+        <div class="confirm-head">
+          <span class="confirm-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </span>
+          <h1 id="confirm-title" tabindex="-1"></h1>
+          <p class="lead" id="confirm-sub"></p>
+        </div>
+        <div class="countdown" id="countdown" hidden>
+          <div class="countdown-time" id="countdown-time">2:00</div>
+          <div class="countdown-label" id="countdown-label"></div>
+        </div>
+        <div class="caller-card" id="caller-card" hidden>
+          <div class="caller-label" id="caller-label"></div>
+          <div class="caller-number" id="caller-number"></div>
+          <div class="hint" id="caller-hint"></div>
+        </div>
+        <p class="demo-note" id="demo-note" hidden></p>
+        <h2 class="expect-title" data-i18n="expectTitle">What to expect</h2>
+        <ul class="expect" id="expect"></ul>
+        <p class="hint ref-line" id="ref-line"></p>
+        <div class="confirm-actions">
+          <button class="btn" type="button" id="restart" data-i18n="restart">Make another request</button>
+        </div>
+      </section>
+
+      <!-- Demo phone line (development only): the assistant's call rings in this tab -->
+      <section id="ring-view" class="ring" hidden aria-labelledby="ring-title">
+        <span class="ring-avatar" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>
+        </span>
+        <p class="ring-label" id="ring-label"></p>
+        <h1 id="ring-title" tabindex="-1"></h1>
+        <p class="ring-number" id="ring-number"></p>
+        <p class="hint" id="ring-hint"></p>
+        <div class="ring-actions">
+          <button class="btn ring-btn ring-decline" type="button" id="ring-decline"></button>
+          <button class="btn ring-btn ring-answer" type="button" id="ring-answer"></button>
+        </div>
+      </section>
+
+      <section id="call-view" hidden aria-labelledby="call-title">
+        <div class="call-head">
+          <h1 id="call-title" tabindex="-1"></h1>
+          <span class="call-timer" id="call-timer">0:00</span>
+        </div>
+        <div class="vstatus">
+          <span class="vdot" id="c-dot" aria-hidden="true"></span>
+          <strong id="c-state"></strong>
+        </div>
+        <div class="vlog" id="c-log" aria-live="polite"></div>
+        <p class="vinterim" id="c-interim" aria-live="polite"></p>
+        <form class="vtype" id="c-type">
+          <label class="visually-hidden" for="c-text" id="c-text-label"></label>
+          <input class="input" id="c-text" autocomplete="off">
+          <button class="btn" type="submit" id="c-send"></button>
+        </form>
+        <div class="vcontrols call-controls" id="c-controls">
+          <button class="btn" type="button" id="c-listen"></button>
+          <button class="btn ring-decline" type="button" id="c-hangup"></button>
+        </div>
+        <div class="call-result" id="call-result" hidden>
+          <h2 id="result-title"></h2>
+          <p class="lead" id="result-sub"></p>
+          <button class="btn btn-primary btn-block" type="button" id="call-done"></button>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/static/shared/voicecall.js"></script>
+  <script src="/static/enquiry/enquiry.js"></script>
+</body>
+</html>

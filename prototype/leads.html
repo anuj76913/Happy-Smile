@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HappySmile Leads</title>
+  <meta name="description" content="Prototype: what HappySmile's front desk sees after people ask to be called. Fictional data.">
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/leads.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="wordmark-name">HappySmile</span>
+      <span class="topbar-title">Leads</span>
+      <label class="visually-hidden" for="clinic-filter">Clinic</label>
+      <select class="select select-compact" id="clinic-filter">
+        <option value="all">All pilot clinics</option>
+        <option value="riverside">Riverside</option>
+        <option value="hillcrest">Hillcrest</option>
+        <option value="lotus">Lotus Square</option>
+      </select>
+    </div>
+    <div class="topbar-right">
+      <span class="clock" id="clock" aria-label="Current time"></span>
+      <span class="user">Front desk: Kavya S.</span>
+      <a class="btn btn-sm" href="index.html">Patient view</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="strip" aria-label="Today so far" id="strip"></section>
+
+    <div class="tabs" role="tablist" aria-label="Lead queues" id="tabs">
+      <button role="tab" id="tab-needs_you" data-tab="needs_you" aria-controls="list-pane">Needs you <span class="count"></span></button>
+      <button role="tab" id="tab-booked" data-tab="booked" aria-controls="list-pane">Booked by assistant <span class="count"></span></button>
+      <button role="tab" id="tab-no_answer" data-tab="no_answer" aria-controls="list-pane">No answer <span class="count"></span></button>
+      <button role="tab" id="tab-standard" data-tab="standard" aria-controls="list-pane">Standard callback <span class="count"></span></button>
+    </div>
+
+    <div class="workspace">
+      <section class="list-pane" id="list-pane" role="tabpanel">
+        <p class="tab-help" id="tab-help"></p>
+        <div class="list" id="list"></div>
+      </section>
+      <aside class="panel" id="panel" aria-label="Lead details" tabindex="-1"></aside>
+    </div>
+
+    <p class="proto-note footer-note">Prototype with fictional leads, names and numbers. Times are IST; the demo clock starts at 14:20 and runs in real time. Actions change this page only.</p>
+  </main>
+
+  <!-- Book slot -->
+  <dialog id="book-dialog" aria-labelledby="book-title">
+    <form method="dialog" id="book-form">
+      <h2 id="book-title">Book a consultation</h2>
+      <p class="dialog-sub" id="book-sub"></p>
+      <fieldset class="slots" id="book-slots"></fieldset>
+      <div class="dialog-actions">
+        <button class="btn" value="cancel" formnovalidate>Cancel</button>
+        <button class="btn btn-primary" value="confirm" id="book-confirm">Book and send WhatsApp</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Review an assistant booking -->
+  <dialog id="review-dialog" aria-labelledby="review-title">
+    <div id="review-body"></div>
+  </dialog>
+
+  <div class="toast-region" id="toasts" aria-live="polite"></div>
+
+  <script src="data/clinics.js"></script>
+  <script src="data/leads.js"></script>
+  <script src="assets/leads.js"></script>
+</body>
+</html>

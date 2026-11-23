@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Voice Demo</title>
+  <meta name="description" content="Talk to the HappySmile virtual assistant in the browser. Practice call: nothing is booked.">
+  <link rel="stylesheet" href="/static/shared/styles.css">
+  <link rel="stylesheet" href="/static/shared/voicecall.css">
+  <link rel="stylesheet" href="/static/voice/voice.css">
+</head>
+<body>
+  <header class="vbar">
+    <span class="wordmark-name">HappySmile</span>
+    <span class="vtitle">Voice demo</span>
+    <a class="btn btn-sm" href="/console">Back to console</a>
+  </header>
+
+  <main class="vwrap">
+    <section class="vcard" id="signin-needed" hidden>
+      <h1>Sign in first</h1>
+      <p class="hint">The voice demo uses the practice-call engine, which needs a staff sign-in.</p>
+      <a class="btn btn-primary" href="/console">Sign in to the console</a>
+    </section>
+
+    <section class="vcard" id="setup" hidden>
+      <h1>Talk to the assistant</h1>
+      <p class="hint">You play the patient. The assistant hears you through the microphone and answers out loud. It's the same engine as a real call (rules first, Groq when configured). <strong>Practice only:</strong> it reads real slots but books nothing.</p>
+      <p class="notice notice-warn" id="no-speech" hidden>This browser can't do speech recognition. Use Chrome or Edge for voice, or type your replies below.</p>
+      <div class="vgrid">
+        <div class="field"><label class="label" for="v-name">Your name</label><input class="input" id="v-name" value="Asha" maxlength="30"></div>
+        <div class="field"><label class="label" for="v-lang">Language</label>
+          <select class="select" id="v-lang"><option value="en">English</option><option value="hi">Hindi</option></select></div>
+        <div class="field"><label class="label" for="v-treatment">You enquired about</label>
+          <select class="select" id="v-treatment"><option value="braces">Braces / aligners</option><option value="whitening">Whitening</option>
+            <option value="implants">Implants</option><option value="other">Other</option></select></div>
+        <div class="field"><label class="label" for="v-clinic">Clinic</label><select class="select" id="v-clinic"></select></div>
+      </div>
+      <p class="hint">Tip: use headphones, so the microphone doesn't pick up the assistant's voice.</p>
+      <button class="btn btn-primary btn-block" type="button" id="v-start">Start call</button>
+    </section>
+
+    <section class="vcard" id="call" hidden>
+      <div class="vstatus">
+        <span class="vdot" id="v-dot" aria-hidden="true"></span>
+        <strong id="v-state">Connecting…</strong>
+        <span class="hint" id="v-lang-tag"></span>
+      </div>
+      <div class="vlog" id="v-log" aria-live="polite"></div>
+      <p class="vinterim" id="v-interim" aria-live="polite"></p>
+      <div class="vcontrols">
+        <button class="btn" type="button" id="v-skip">Skip (stop speaking)</button>
+        <button class="btn" type="button" id="v-listen">Listen again</button>
+        <button class="btn btn-danger-quiet" type="button" id="v-hangup">Hang up</button>
+      </div>
+      <form class="vtype" id="v-type">
+        <label class="visually-hidden" for="v-text">Or type what you'd say</label>
+        <input class="input" id="v-text" autocomplete="off" placeholder="Or type what you'd say">
+        <button class="btn" type="submit">Send</button>
+      </form>
+      <div class="notice notice-info" id="v-result" hidden></div>
+      <button class="btn btn-primary" type="button" id="v-again" hidden>New call</button>
+    </section>
+  </main>
+  <script src="/static/shared/voicecall.js"></script>
+  <script src="/static/voice/voice.js"></script>
+</body>
+</html>

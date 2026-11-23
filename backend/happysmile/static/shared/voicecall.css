@@ -1,0 +1,18 @@
+/* Shared voice-call transcript styles (voicecall.js) */
+.vstatus { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.vdot { width: 14px; height: 14px; border-radius: 50%; background: var(--border-strong); flex: none; }
+.vdot.speaking { background: var(--primary); }
+.vdot.listening { background: var(--urgent); animation: vpulse 1.2s ease-in-out infinite; }
+.vdot.thinking { background: var(--warn); }
+@keyframes vpulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+@media (prefers-reduced-motion: reduce) { .vdot.listening { animation: none; } }
+.vlog { border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-2); padding: 12px; min-height: 260px;
+  max-height: 52vh; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.vline { padding: 8px 10px; border-radius: var(--radius-sm); font-size: 15px; max-width: 88%; }
+.vline .who { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 2px; }
+.vline.assistant { background: var(--surface); border: 1px solid var(--border); align-self: flex-start; }
+.vline.caller { background: var(--primary-soft); align-self: flex-end; }
+.vline.system { align-self: center; color: var(--muted); font-size: 12px; background: none; padding: 0; text-align: center; }
+.vinterim { min-height: 22px; color: var(--muted); font-style: italic; margin: 8px 0; }
+.vcontrols, .vtype { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.vtype .input { flex: 1 1 200px; min-width: 0; }

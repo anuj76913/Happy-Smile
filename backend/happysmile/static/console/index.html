@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HappySmile Leads</title>
+  <link rel="stylesheet" href="/static/shared/styles.css">
+  <link rel="stylesheet" href="/static/console/console.css">
+  <link rel="stylesheet" href="/static/console/console-app.css">
+</head>
+<body>
+  <!-- ================= Sign in ================= -->
+  <main class="login" id="login-view" hidden>
+    <form class="login-card" id="login-form" novalidate>
+      <div class="wordmark-name">HappySmile</div>
+      <h1>Sign in to Leads</h1>
+      <div class="field">
+        <label class="label" for="username">Username</label>
+        <input class="input" id="username" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label class="label" for="password">Password</label>
+        <input class="input" id="password" type="password" autocomplete="current-password" required>
+      </div>
+      <p class="error" id="login-error" role="alert" hidden></p>
+      <button class="btn btn-primary btn-block" type="submit" id="login-btn">Sign in</button>
+    </form>
+  </main>
+
+  <!-- ================= App ================= -->
+  <div id="app-view" hidden>
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="wordmark-name">HappySmile</span>
+        <span class="topbar-title">Leads</span>
+        <label class="visually-hidden" for="clinic-filter">Clinic</label>
+        <select class="select select-compact" id="clinic-filter"></select>
+        <button class="btn btn-sm" type="button" id="slots-btn">Slots</button>
+        <button class="btn btn-sm" type="button" id="testcall-btn">Test call</button>
+        <a class="btn btn-sm" href="/voice" target="_blank" rel="noopener">Voice demo</a>
+        <button class="btn btn-sm" type="button" id="reviews-btn">Reviews</button>
+        <button class="btn btn-sm" type="button" id="attendance-btn">Attendance</button>
+        <button class="btn btn-sm" type="button" id="ops-btn" hidden>Ops</button>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-sm" type="button" id="transfer-btn" aria-pressed="false">Live transfers: off</button>
+        <span class="live" id="live" title="Live updates"></span>
+        <span class="clock" id="clock"></span>
+        <span class="user" id="user"></span>
+        <button class="btn btn-sm" type="button" id="logout">Sign out</button>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <p class="banner" id="banner" hidden></p>
+      <section class="strip" aria-label="Today so far" id="strip"></section>
+
+      <div class="tabs" role="tablist" aria-label="Lead queues" id="tabs">
+        <button role="tab" data-tab="needs_you" id="tab-needs_you" aria-controls="list-pane">Needs you <span class="count">0</span></button>
+        <button role="tab" data-tab="booked" id="tab-booked" aria-controls="list-pane">Booked by assistant <span class="count">0</span></button>
+        <button role="tab" data-tab="no_answer" id="tab-no_answer" aria-controls="list-pane">No answer <span class="count">0</span></button>
+        <button role="tab" data-tab="standard" id="tab-standard" aria-controls="list-pane">Standard callback <span class="count">0</span></button>
+      </div>
+
+      <div class="workspace">
+        <section class="list-pane" id="list-pane" role="tabpanel">
+          <div class="list-tools" id="list-tools">
+            <p class="tab-help" id="tab-help"></p>
+            <div class="segmented segmented-sm" id="view-toggle" role="radiogroup" aria-label="Show">
+              <label><input type="radio" name="view" value="to_call" checked><span>To call</span></label>
+              <label><input type="radio" name="view" value="done"><span>Done</span></label>
+            </div>
+          </div>
+          <div class="list" id="list"></div>
+        </section>
+        <aside class="panel is-empty" id="panel" aria-label="Lead details" tabindex="-1"></aside>
+      </div>
+    </main>
+  </div>
+
+  <!-- Book a slot -->
+  <dialog id="book-dialog" aria-labelledby="book-title">
+    <form method="dialog" id="book-form">
+      <h2 id="book-title">Book a consultation</h2>
+      <p class="dialog-sub" id="book-sub"></p>
+      <p class="notice notice-warn" id="book-stale" hidden></p>
+      <fieldset class="slots slot-scroll" id="book-slots"></fieldset>
+      <p class="error" id="book-error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button class="btn" value="cancel" formnovalidate>Cancel</button>
+        <button class="btn btn-primary" type="button" id="book-confirm">Book consultation</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Follow-up note -->
+  <dialog id="note-dialog" aria-labelledby="note-title">
+    <form method="dialog" id="note-form">
+      <h2 id="note-title">Reached: follow up later</h2>
+      <p class="dialog-sub">What did they say, and when should we call back?</p>
+      <label class="label" for="note-text">Note</label>
+      <textarea class="input" id="note-text" rows="3" maxlength="300"></textarea>
+      <div class="dialog-actions">
+        <button class="btn" value="cancel" formnovalidate>Cancel</button>
+        <button class="btn btn-primary" type="button" id="note-save">Save outcome</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Maintain slots -->
+  <dialog id="slots-dialog" aria-labelledby="slots-title">
+    <form method="dialog" id="slots-form">
+      <h2 id="slots-title">Add consultation slots</h2>
+      <p class="dialog-sub" id="slots-sub">Keep the next 7 days up to date every morning. The slot list is what staff, and later the assistant, book from.</p>
+      <div class="grid-2">
+        <div class="field"><label class="label" for="s-clinic">Clinic</label><select class="select" id="s-clinic"></select></div>
+        <div class="field"><label class="label" for="s-dentist">Dentist</label><select class="select" id="s-dentist"></select></div>
+        <div class="field"><label class="label" for="s-day">Day</label><input class="input" type="date" id="s-day"></div>
+        <div class="field"><label class="label" for="s-duration">Slot length</label>
+          <select class="select" id="s-duration"><option value="20">20 min</option><option value="30" selected>30 min</option><option value="45">45 min</option></select></div>
+        <div class="field"><label class="label" for="s-start">From</label><input class="input" type="time" id="s-start" value="10:00"></div>
+        <div class="field"><label class="label" for="s-end">To</label><input class="input" type="time" id="s-end" value="13:00"></div>
+      </div>
+      <p class="hint" id="s-refreshed"></p>
+      <p class="error" id="slots-error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button class="btn" value="cancel" formnovalidate>Close</button>
+        <button class="btn btn-primary" type="button" id="slots-save">Add slots</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Review an assistant booking -->
+  <dialog id="review-dialog" aria-labelledby="review-title">
+    <div id="review-body"></div>
+  </dialog>
+
+  <!-- Practice call: staff play the caller -->
+  <dialog id="tc-dialog" class="tc-dialog" aria-labelledby="tc-title">
+    <h2 id="tc-title">Test call</h2>
+    <p class="dialog-sub">Play the caller to try the assistant's script. Practice calls read real slots but never book them,
+      and create no leads or handovers.</p>
+    <form id="tc-setup" class="grid-2">
+      <div class="field"><label class="label" for="tc-name">Caller name</label><input class="input" id="tc-name" value="Asha" maxlength="30"></div>
+      <div class="field"><label class="label" for="tc-lang">Language</label>
+        <select class="select" id="tc-lang"><option value="en">English</option><option value="hi">Hindi</option></select></div>
+      <div class="field"><label class="label" for="tc-treatment">Enquiry</label>
+        <select class="select" id="tc-treatment"><option value="braces">Braces / aligners</option><option value="whitening">Whitening</option>
+          <option value="implants">Implants</option><option value="other">Other</option></select></div>
+      <div class="field"><label class="label" for="tc-clinic">Clinic</label><select class="select" id="tc-clinic"></select></div>
+    </form>
+    <div class="tc-log" id="tc-log" aria-live="polite" hidden></div>
+    <p class="notice notice-info" id="tc-result" hidden></p>
+    <form id="tc-input" class="tc-input" hidden>
+      <label class="visually-hidden" for="tc-text">What the caller says</label>
+      <input class="input" id="tc-text" autocomplete="off" placeholder="Type what the caller says">
+      <button class="btn btn-primary" type="submit">Say</button>
+      <button class="btn" type="button" id="tc-silence">Stay silent</button>
+      <button class="btn btn-danger-quiet" type="button" id="tc-hangup">Hang up</button>
+    </form>
+    <div class="dialog-actions">
+      <button class="btn" type="button" id="tc-close">Close</button>
+      <button class="btn btn-primary" type="button" id="tc-start">Start call</button>
+    </div>
+  </dialog>
+
+  <!-- Ops: metrics, alerts, kill switch, go-live gates (managers and admins) -->
+  <dialog id="ops-dialog" class="ops-dialog" aria-labelledby="ops-title">
+    <div class="ops-head"><h2 id="ops-title">Pilot operations</h2>
+      <button class="btn btn-sm" type="button" id="ops-close">Close</button></div>
+    <div id="ops-body"><p class="hint">Loading...</p></div>
+  </dialog>
+
+  <!-- Daily call reviews (architecture §15.3) -->
+  <dialog id="reviews-dialog" class="ops-dialog" aria-labelledby="reviews-title">
+    <div class="ops-head"><h2 id="reviews-title">Daily call review</h2>
+      <span class="actions"><label class="visually-hidden" for="reviews-day">Day</label><input class="input input-compact" type="date" id="reviews-day">
+      <button class="btn btn-sm" type="button" id="reviews-close">Close</button></span></div>
+    <p class="dialog-sub">A fixed random sample of up to 10 assistant calls per clinic per day. Check each against the checklist; anything that fails becomes a fix and a new evaluation scenario.</p>
+    <div class="review-grid"><div id="reviews-list"></div><div id="review-detail"><p class="hint">Pick a call.</p></div></div>
+  </dialog>
+
+  <!-- Attendance (plan P5-04) -->
+  <dialog id="attendance-dialog" class="ops-dialog" aria-labelledby="attendance-title">
+    <div class="ops-head"><h2 id="attendance-title">Attendance</h2><button class="btn btn-sm" type="button" id="attendance-close">Close</button></div>
+    <p class="dialog-sub">Mark every consultation from the last 7 days, whoever booked it. The pilot compares attendance between groups.</p>
+    <div id="attendance-body"></div>
+  </dialog>
+
+  <div class="toast-region" id="toasts" aria-live="polite"></div>
+  <script src="/static/console/console.js"></script>
+</body>
+</html>

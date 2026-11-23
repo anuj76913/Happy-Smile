@@ -1,0 +1,106 @@
+PRODUCT CASE: HappySmile — AI voice assistant for lead callbacks
+(Product Manager case exercise, about 2–3 hours. Fictional scenario.
+"We value judgement over polish.")
+
+======================================================================
+PART 1 — THE PROBLEM (as given)
+======================================================================
+
+Headline: Interested people ask HappySmile to call. The call comes hours later.
+
+  Enquiry arrives  ---- 4–6 hours ---->  Front desk calls
+
+The situation
+- HappySmile is a chain of 12 dental clinics in India.
+- Each day, about 300 people show interest online by enquiring about braces,
+  whitening, implants and similar treatments.
+- Front-desk staff call them back, usually 4–6 hours later.
+- Only about 30% of enquiries become booked appointments.
+- HappySmile wants an AI voice assistant that reaches each interested person
+  within minutes, qualifies them, and either books an appointment or hands
+  over to staff.
+
+What three people said
+1. Operations head (sharing from their data):
+   "Leads we happen to call within 5 minutes convert 3x better.
+    So the fix is simple: call everyone faster."
+2. Founder:
+   "The AI should sound so human that nobody realises it's AI."
+3. Front-desk lead:
+   "Every lead should still go to my team. I don't trust a bot with patients."
+
+======================================================================
+PART 2 — WHAT MUST BE SUBMITTED (Google Form)
+======================================================================
+
+1. Mockup link (required)
+   At most two screens or any mockups:
+   - Scenario #1: the moment a person asks to be contacted.
+   - Scenario #2: what HappySmile sees afterwards.
+   Any tool works. The link must open WITHOUT a login.
+
+2. Your brief (required, maximum 300 words)
+   - What you would ship in the first 4 weeks, and what you are explicitly
+     NOT doing.
+   - One success metric and one metric you would deliberately ignore,
+     with reasons.
+   - How you would handle the founder and the front-desk lead.
+
+3. Three questions you'd ask HappySmile before building anything, and why.
+   (required)
+
+4. How is your own solution most likely to fail in the first month?
+   Be specific. (required)
+
+5. If you used AI tools: one suggestion you rejected, and why.
+   Three lines at most. Leave blank if you did not use AI tools. (optional)
+
+======================================================================
+PART 3 — BUILD SPEC FOR THE MOCKUP (suggested; edit to match your own take)
+======================================================================
+
+Goal: a small clickable web prototype with exactly TWO screens, deployed to
+a public URL that opens without login (e.g. Vercel, Netlify, GitHub Pages,
+or a public share link from your vibe-coding tool). Use only made-up names,
+numbers and phone numbers. Do not use real HappySmile branding.
+
+Screen 1 — "Request a call" (mobile, ~390px wide)
+The moment a person asks to be contacted, on HappySmile's enquiry page.
+- Fields: name, mobile number, treatment (braces/aligners, whitening,
+  implants, other), nearest clinic.
+- Contact preference: "Call me now" (default) / "Call me at a time I pick"
+  / "WhatsApp me instead".
+- Language: English / Hindi.
+- Clear disclosure before submit, e.g.:
+  "HappySmile's virtual assistant will call you in about 2 minutes from
+   +91 XXXXX XXXXX. It can book a consultation or connect you to our team.
+   Say 'talk to a person' at any time."
+- Consent checkbox for the call and WhatsApp updates.
+- Submit button: "Request my call".
+- Optional: after submit, show a confirmation state with the number that
+  will call and a countdown.
+
+Screen 2 — "Leads" queue for the front desk (desktop, ~1280px wide)
+What HappySmile sees afterwards.
+- Top strip for today: enquiries received, reached within 5 minutes,
+  consults booked by assistant, waiting for staff, no answer (retrying).
+- Tabs or filters, in this order:
+    Needs you (handed over by assistant, sorted by waiting time, with a
+      timer against a target, e.g. 15 minutes)
+    Booked by assistant
+    No answer (retry scheduled / WhatsApp sent)
+    Standard callback (pilot control group — staff call as usual)
+- Handover reasons shown as tags: asked for a person, pain or swelling
+  (urgent), price/EMI question, clinical question, couldn't understand.
+- Click a lead to open a side panel:
+    name, treatment, clinic, language, time of enquiry, time first reached
+    3-line AI call summary
+    answers captured (treatment, preferred slot, urgency)
+    transcript snippet + play-recording button
+    actions: Call now, Book slot, Mark not interested
+    feedback: "Was this handover right?" thumbs up / thumbs down
+- Booked leads show slot, dentist, clinic, and "confirmation sent on
+  WhatsApp", with a Review link so staff can check every booking.
+
+Tone: clean, calm, clinical-but-friendly. Real buttons/inputs, readable
+contrast, no emoji, no lorem ipsum.

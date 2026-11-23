@@ -1,0 +1,20 @@
+# Secrets: never commit (the Groq key lives in backend/.env)
+.env
+.env.*
+!.env.example
+*.key
+.claude/settings.local.json
+
+# Local database, virtualenv, caches
+.localdb/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.log
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

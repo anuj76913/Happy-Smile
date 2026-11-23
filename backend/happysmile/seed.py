@@ -31,6 +31,8 @@ STAFF = [("kavya", "Kavya S.", "front_desk", ["riverside"], "riverside-demo"),
          ("neelam", "Neelam P.", "front_desk", ["lotus"], "lotus-demo"),
          ("ops", "Ops Manager", "manager", [], "manager-demo"),
          ("admin", "Pilot Admin", "admin", [], "admin-demo")]
+# Used when OPEN_CONSOLE is on (public demo): front desk for all pilot clinics, no Ops/admin rights, no password login.
+GUEST = ("guest", "Demo visitor", "front_desk", ["riverside", "hillcrest", "lotus"])
 
 
 def seed(with_staff: bool = True, slot_days: int = 7) -> None:
@@ -69,6 +71,13 @@ def seed(with_staff: bool = True, slot_days: int = 7) -> None:
                 for c in clinics:
                     conn.execute("INSERT INTO staff_clinic (staff_id, clinic_id) VALUES (%s, %s) ON CONFLICT DO NOTHING",
                                  (row["id"], c))
+            username, display, role, clinics = GUEST
+            row = conn.execute("SELECT id FROM staff WHERE username = %s", (username,)).fetchone()
+            if row is None:  # random password nobody knows: the account is only used by OPEN_CONSOLE
+                row = conn.execute("INSERT INTO staff (username, display_name, role, password_hash) VALUES (%s, %s, %s, %s) "
+                                   "RETURNING id", (username, display, role, hash_password(secrets.token_urlsafe(24)))).fetchone()
+            for c in clinics:
+                conn.execute("INSERT INTO staff_clinic (staff_id, clinic_id) VALUES (%s, %s) ON CONFLICT DO NOTHING", (row["id"], c))
         # A week of 30-minute slots, 10:00-13:00 and 16:00-20:00, for each pilot dentist.
         today = datetime.now(IST).date()
         for d in conn.execute("SELECT id, clinic_id FROM dentist").fetchall():

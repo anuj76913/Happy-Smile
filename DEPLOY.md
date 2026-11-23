@@ -73,7 +73,10 @@ would otherwise let anyone into the console). Visitors are told to use made-up d
 
 - Form → pick Riverside, Hillcrest or Lotus Square → **Call me now** → the tab rings → **Answer**,
   allow the microphone (Chrome or Edge; both sites are HTTPS, which the microphone needs).
-- Console: `/console`, users `kavya`, `arif`, `neelam`, `ops`, `admin`, all with your `DEMO_STAFF_PASSWORD`.
+- Console: `/console` opens without a login as **Demo visitor** (front desk for all three pilot clinics;
+  no Ops, kill switch or experiment settings). `OPEN_CONSOLE` is on by default with `APP_ENV=demo`; set it to
+  `false` to require sign-in. Ops/admin: sign in via `POST /v1/auth/login` as `ops` or `admin` with your
+  `DEMO_STAFF_PASSWORD` (the console then uses that session). Staging/production refuse `OPEN_CONSOLE`.
 - Slots are topped up every 6 hours, so the demo keeps a rolling week of appointments.
 
 ## Costs and limits

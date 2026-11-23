@@ -121,13 +121,18 @@
       .catch(function (ex) { err.textContent = ex.message; err.hidden = false; })
       .then(function () { $("login-btn").disabled = false; });
   });
-  $("logout").addEventListener("click", function () { api("/v1/auth/logout", { method: "POST" }).then(showLogin, showLogin); });
+  $("logout").addEventListener("click", function () {
+    // On the open demo console, signing out drops back to the demo visitor instead of the login form.
+    var after = function () { api("/v1/auth/me").then(start).catch(showLogin); };
+    api("/v1/auth/logout", { method: "POST" }).then(after, after);
+  });
 
   function start(me) {
     state.me = me;
     $("login-view").hidden = true; $("app-view").hidden = false;
     $("user").textContent = me.name + " (" + me.role.replace("_", " ") + ")";
     $("ops-btn").hidden = me.role === "front_desk";
+    $("logout").hidden = me.username === "guest";  // open demo console: nobody to sign out
     loadTransfer();
     var sel = $("clinic-filter"); sel.innerHTML = "";
     if (me.clinics.length > 1) sel.appendChild(new Option("All my clinics", "all"));

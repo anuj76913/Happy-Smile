@@ -91,6 +91,7 @@ if ($VoiceDemo) {
   $env:DEDUPE_HOURS = "0"                  # try again with the same mobile number
   $env:RATE_LIMIT_PHONE_PER_HOUR = "100"
   $env:AUTO_KILL_SWITCH = "false"          # nobody is on the console at night to answer urgent handovers
+  $env:OPEN_CONSOLE = "true"               # console opens without a login (demo visitor, no Ops rights)
   & uv run @envArgs python -m happysmile.demo_mode on
   New-Item -ItemType File -Force $marker | Out-Null
   Write-Host "Submit the form with 'Call me now': this tab rings in a few seconds. Use Chrome or Edge and allow the microphone."

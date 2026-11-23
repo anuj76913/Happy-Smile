@@ -94,16 +94,21 @@ def _load_staff(staff_id) -> Staff:
 
 def current_staff(request: Request) -> Staff:
     token = request.cookies.get(COOKIE)
-    if not token:
-        raise HTTPException(401, "Please sign in.")
-    with tx() as conn:
-        row = conn.execute(
-            "SELECT s.staff_id FROM staff_session s JOIN staff st ON st.id = s.staff_id "
-            "WHERE s.token_hash = %s AND s.revoked_at IS NULL AND s.expires_at > now() AND st.active",
-            (token_hash(token),)).fetchone()
-    if not row:
-        raise HTTPException(401, "Your session has ended. Please sign in again.")
-    return _load_staff(row["staff_id"])
+    row = None
+    if token:
+        with tx() as conn:
+            row = conn.execute(
+                "SELECT s.staff_id FROM staff_session s JOIN staff st ON st.id = s.staff_id "
+                "WHERE s.token_hash = %s AND s.revoked_at IS NULL AND s.expires_at > now() AND st.active",
+                (token_hash(token),)).fetchone()
+    if row:
+        return _load_staff(row["staff_id"])
+    if get_settings().open_console:  # public demo: no login, act as the guest front-desk account
+        with tx() as conn:
+            guest = conn.execute("SELECT id FROM staff WHERE username = 'guest' AND active").fetchone()
+        if guest:
+            return _load_staff(guest["id"])
+    raise HTTPException(401, "Your session has ended. Please sign in again." if token else "Please sign in.")
 
 
 def require_csrf(request: Request) -> None:

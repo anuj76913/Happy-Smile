@@ -7,7 +7,7 @@ import pytest
 from happysmile import config, demo_mode, orchestrator, telephony
 from happysmile.db import tx
 
-from .conftest import enquiry
+from .conftest import enquiry, login_as
 from .test_voice_flow import place, q
 
 
@@ -194,3 +194,31 @@ def _restore_dev_passwords():
     with tx() as conn:
         for username, _, _, _, pw in STAFF:
             conn.execute("UPDATE staff SET password_hash = %s WHERE username = %s", (hash_password(pw), username))
+
+
+def test_open_console_needs_no_login_but_keeps_ops_locked(client, monkeypatch):
+    assert client.get("/v1/auth/me").status_code == 401  # off by default
+    monkeypatch.setenv("OPEN_CONSOLE", "true")
+    config.get_settings.cache_clear()
+    me = client.get("/v1/auth/me").json()
+    assert me["username"] == "guest" and me["role"] == "front_desk"
+    assert {c["id"] for c in me["clinics"]} == {"riverside", "hillcrest", "lotus"}
+    assert client.get("/v1/queue?tab=needs_you").status_code == 200
+    assert client.get("/v1/admin/ops").status_code == 403  # kill switch, gates: managers/admins only
+    assert client.post("/v1/admin/kill-switch", json={"action": "stop_assistant", "reason": "x"},
+                       headers={"X-Requested-With": "hs-console"}).status_code == 403
+    assert client.post("/v1/auth/login", json={"username": "guest", "password": ""}).status_code in (401, 422)
+    login_as(client, "ops")  # a real sign-in still wins over the guest
+    assert client.get("/v1/auth/me").json()["username"] == "ops"
+    monkeypatch.undo()
+    config.get_settings.cache_clear()
+
+
+def test_open_console_is_refused_in_production(monkeypatch):
+    monkeypatch.setenv("APP_ENV", "staging")
+    monkeypatch.setenv("OPEN_CONSOLE", "true")
+    config.get_settings.cache_clear()
+    with pytest.raises(RuntimeError, match="OPEN_CONSOLE"):
+        config.get_settings()
+    monkeypatch.undo()
+    config.get_settings.cache_clear()

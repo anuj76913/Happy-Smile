@@ -64,10 +64,4 @@ A related risk: weak Hindi/Hinglish recognition on noisy phone lines would push 
 
 ## 5. If you used AI tools: one suggestion you rejected, and why (max 3 lines, optional)
 
-> **Write this yourself.** It should describe a real moment from your own work. Template:
->
-> *[Tool] suggested [suggestion]. I rejected it because [reason grounded in the case].*
-
-Possible candidates from this project, if they match what actually happened:
-- Using "reached within 5 minutes" as the success metric. It measures our speed, not patient outcomes, and repeats the ops head's correlation.
-- Fixing exact LLM model IDs in the design. Providers retire models, so IDs belong in config and are chosen at build time.
+Claude suggested letting the LLM (Groq) interpret every caller reply, including dates, slot choice and "pain or swelling". I rejected that after our test calls passed only 11 of 16: it got dates wrong and flagged pain that wasn't there. Now tested rules decide first, and the LLM only fills gaps they can't read: 16 of 16 passed.

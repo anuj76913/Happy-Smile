@@ -59,6 +59,8 @@ class Settings:
     # Hosting (Railway): run the call worker inside the web process; staff password for a public demo
     run_worker: bool
     demo_staff_password: str
+    # Public demo: the console opens without a login, as the 'guest' front-desk account (no Ops/admin rights)
+    open_console: bool
 
     @property
     def browser_calls(self) -> bool:
@@ -125,6 +127,7 @@ def get_settings() -> Settings:
         dedupe_hours=int(os.environ.get("DEDUPE_HOURS", "24")),
         run_worker=_bool("RUN_WORKER", False),
         demo_staff_password=os.environ.get("DEMO_STAFF_PASSWORD", ""),
+        open_console=_bool("OPEN_CONSOLE", env == "demo"),
     )
     if s.env == "demo":
         # A public demo site (e.g. Railway + Vercel): synthetic data, browser calls allowed, but real secrets.
@@ -145,6 +148,8 @@ def get_settings() -> Settings:
             problems.append("COOKIE_SECURE must be true")
         if "127.0.0.1" in s.database_url or "localhost" in s.database_url:
             problems.append("DATABASE_URL points at a local database")
+        if s.open_console:
+            problems.append("OPEN_CONSOLE must be off: real patient data needs a staff login")
         if s.voice_agent_enabled and s.telephony_provider in ("sim", "browser"):
             problems.append("VOICE_AGENT_ENABLED needs a real TELEPHONY_PROVIDER, not the simulator or the browser demo")
         if problems:

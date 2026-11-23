@@ -55,6 +55,7 @@
       demoPick: function (names) { return "Voice demo: choose " + names.join(", ") + " to get a call from the assistant in this tab."; },
       demoNotThis: function (names) { return "Voice demo: this clinic isn't in the assistant pilot, so the team would call instead. Choose " + names.join(", ") + " for the assistant."; },
       demoNoClinics: "Voice demo: no clinic has the assistant switched on. Restart with run-dev.ps1 -VoiceDemo.",
+      demoBanner: "Demo site: no real phone call is made. The assistant calls this browser tab, so please use a made-up name and number (e.g. 98765 43210).",
       demoTeam: "Voice demo: this enquiry went to the clinic team, so the assistant won't ring this tab. Make another request at a pilot clinic."
     },
     hi: {
@@ -108,6 +109,7 @@
       demoPick: function (names) { return "वॉइस डेमो: इस टैब में असिस्टेंट की कॉल के लिए " + names.join(", ") + " चुनें।"; },
       demoNotThis: function (names) { return "वॉइस डेमो: यह क्लिनिक असिस्टेंट पायलट में नहीं है, इसलिए टीम कॉल करेगी। असिस्टेंट के लिए " + names.join(", ") + " चुनें।"; },
       demoNoClinics: "वॉइस डेमो: किसी क्लिनिक में असिस्टेंट चालू नहीं है। run-dev.ps1 -VoiceDemo से फिर शुरू करें।",
+      demoBanner: "डेमो साइट: कोई असली फ़ोन कॉल नहीं होती। असिस्टेंट इसी ब्राउज़र टैब में कॉल करती है, इसलिए कृपया काल्पनिक नाम और नंबर लिखें (जैसे 98765 43210)।",
       demoTeam: "वॉइस डेमो: यह अनुरोध क्लिनिक टीम को गया है, इसलिए असिस्टेंट इस टैब में कॉल नहीं करेगी। किसी पायलट क्लिनिक के लिए नया अनुरोध करें।"
     }
   };
@@ -187,6 +189,7 @@
     var hint = !cfg.browser_calls ? "" : !demoClinics.length ? t("demoNoClinics")
       : !$("clinic").value ? T[lang].demoPick(demoClinics) : !assist ? T[lang].demoNotThis(demoClinics) : "";
     $("clinic-demo-hint").textContent = hint; $("clinic-demo-hint").hidden = !hint;
+    $("demo-banner").textContent = cfg.browser_calls ? t("demoBanner") : ""; $("demo-banner").hidden = !cfg.browser_calls;
     $("consent-text").textContent = d.consent;
     buildSchedule(true);
     updateSubmit();

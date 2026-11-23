@@ -57,12 +57,15 @@ def seed(with_staff: bool = True, slot_days: int = 7) -> None:
                 if not conn.execute("SELECT 1 FROM dentist WHERE clinic_id = %s AND name = %s", (cid, n)).fetchone():
                     conn.execute("INSERT INTO dentist (clinic_id, name) VALUES (%s, %s)", (cid, n))
         if with_staff:
+            override = get_settings().demo_staff_password  # public demo: never the published dev passwords
             for username, display, role, clinics, pw in STAFF:
                 row = conn.execute("SELECT id FROM staff WHERE username = %s", (username,)).fetchone()
                 if row is None:
                     row = conn.execute("INSERT INTO staff (username, display_name, role, password_hash) "
                                        "VALUES (%s, %s, %s, %s) RETURNING id",
-                                       (username, display, role, hash_password(pw))).fetchone()
+                                       (username, display, role, hash_password(override or pw))).fetchone()
+                elif override:
+                    conn.execute("UPDATE staff SET password_hash = %s WHERE id = %s", (hash_password(override), row["id"]))
                 for c in clinics:
                     conn.execute("INSERT INTO staff_clinic (staff_id, clinic_id) VALUES (%s, %s) ON CONFLICT DO NOTHING",
                                  (row["id"], c))
@@ -93,4 +96,5 @@ if __name__ == "__main__":
     close_pool()
     print("Seeded clinics, dentists, experiment config (0% assistant), slots and demo staff:")
     for username, display, role, clinics, pw in STAFF:
-        print(f"  {username:8s} / {pw:16s} {role:10s} {', '.join(clinics) or 'all clinics'}")
+        shown = "(DEMO_STAFF_PASSWORD)" if s.demo_staff_password else pw
+        print(f"  {username:8s} / {shown:22s} {role:10s} {', '.join(clinics) or 'all clinics'}")

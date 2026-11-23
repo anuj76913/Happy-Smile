@@ -11,6 +11,8 @@ powershell -ExecutionPolicy Bypass -File .\run-dev.ps1          # add -Demo for 
 
 Then open http://127.0.0.1:8000/ (enquiry form) and http://127.0.0.1:8000/console (sign in as `kavya` / `riverside-demo`, `ops` / `manager-demo` or `admin` / `admin-demo`). Groq is used if `backend\.env` has a key and model IDs. Stop with Ctrl+C, close the worker window, then `.\run-dev.ps1 -Stop`.
 
+Deploying a public demo (Railway + Vercel): see [DEPLOY.md](../DEPLOY.md).
+
 ### Talk to the assistant after the form (browser voice demo)
 
 ```powershell

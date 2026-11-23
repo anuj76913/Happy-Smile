@@ -1,0 +1,9 @@
+.venv/
+.localdb/
+.pytest_cache/
+**/__pycache__/
+*.pyc
+.env
+tests/
+eval_reports/
+run-dev.ps1

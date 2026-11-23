@@ -18,3 +18,7 @@ __pycache__/
 .idea/
 Thumbs.db
 .DS_Store
+
+# Vercel build output
+vercel-dist/
+.vercel/

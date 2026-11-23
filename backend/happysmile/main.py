@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import threading
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -19,11 +20,19 @@ STATIC = Path(__file__).parent / "static"
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    get_settings()  # fail fast on bad production config
+    s = get_settings()  # fail fast on bad production config
     init_pool()
     with tx() as conn:
         disclosures.register_all(conn)
+    stop, worker = threading.Event(), None
+    if s.run_worker:  # one-service hosting (e.g. Railway): the call worker runs alongside the web server
+        from . import orchestrator
+        worker = threading.Thread(target=orchestrator.run_forever, kwargs={"stop": stop}, name="hs-worker", daemon=True)
+        worker.start()
     yield
+    stop.set()
+    if worker:
+        worker.join(timeout=10)
     close_pool()
 
 

@@ -151,3 +151,46 @@ def test_demo_mode_switch_and_production_refusal(monkeypatch):
         config.get_settings()
     monkeypatch.undo()
     config.get_settings.cache_clear()
+
+
+def test_public_demo_site_needs_real_secrets(monkeypatch):
+    monkeypatch.setenv("APP_ENV", "demo")
+    monkeypatch.setenv("TELEPHONY_PROVIDER", "browser")
+    monkeypatch.delenv("IP_HASH_SALT", raising=False)  # falls back to the dev-only salt
+    config.get_settings.cache_clear()
+    with pytest.raises(RuntimeError) as e:
+        config.get_settings()
+    assert "IP_HASH_SALT" in str(e.value) and "DEMO_STAFF_PASSWORD" in str(e.value) and "local database" in str(e.value)
+    monkeypatch.undo()
+    config.get_settings.cache_clear()
+
+
+def test_demo_site_allows_browser_calls_and_secure_cookies(monkeypatch):
+    for k, v in {"APP_ENV": "demo", "TELEPHONY_PROVIDER": "browser", "IP_HASH_SALT": "x" * 32,
+                 "DEMO_STAFF_PASSWORD": "a-long-demo-password", "DATABASE_URL": "postgresql://u@db.internal:5432/app"}.items():
+        monkeypatch.setenv(k, v)
+    config.get_settings.cache_clear()
+    s = config.get_settings()
+    assert s.browser_calls and s.cookie_secure and not s.is_production_like
+    monkeypatch.undo()
+    config.get_settings.cache_clear()
+
+
+def test_demo_staff_password_replaces_the_published_ones(client, monkeypatch):
+    from happysmile.seed import seed
+    monkeypatch.setenv("DEMO_STAFF_PASSWORD", "a-long-demo-password")
+    config.get_settings.cache_clear()
+    seed(slot_days=1)
+    assert client.post("/v1/auth/login", json={"username": "kavya", "password": "riverside-demo"}).status_code == 401
+    assert client.post("/v1/auth/login", json={"username": "kavya", "password": "a-long-demo-password"}).status_code == 200
+    monkeypatch.undo()
+    config.get_settings.cache_clear()
+    _restore_dev_passwords()
+
+
+def _restore_dev_passwords():
+    from happysmile.security import hash_password
+    from happysmile.seed import STAFF
+    with tx() as conn:
+        for username, _, _, _, pw in STAFF:
+            conn.execute("UPDATE staff SET password_hash = %s WHERE username = %s", (hash_password(pw), username))

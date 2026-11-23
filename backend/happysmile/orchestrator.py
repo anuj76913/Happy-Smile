@@ -365,16 +365,28 @@ def tick() -> dict:
     return out
 
 
-def run_forever(interval: float = 2.0) -> None:  # pragma: no cover - process entry point
-    print(f"Orchestrator worker {WORKER_ID} started.")
-    while True:
+SLOT_TOP_UP_EVERY = 6 * 3600  # public demo site: keep a rolling week of open slots
+
+
+def run_forever(interval: float = 2.0, stop=None) -> None:  # pragma: no cover - process entry point
+    """Worker loop. `stop` (a threading.Event) ends it when the worker runs inside the web process."""
+    print(f"Orchestrator worker {WORKER_ID} started.", flush=True)
+    last_top_up = 0.0
+    while not (stop and stop.is_set()):
         try:
             r = tick()
             if r["jobs"]:
-                print(r)
+                print(r, flush=True)
+            if get_settings().env == "demo" and _time.monotonic() - last_top_up > SLOT_TOP_UP_EVERY:
+                from .seed import seed
+                seed(with_staff=False)
+                last_top_up = _time.monotonic()
         except Exception as e:
-            print("worker error:", type(e).__name__, e)
-        _time.sleep(interval)
+            print("worker error:", type(e).__name__, e, flush=True)
+        if stop:
+            stop.wait(interval)
+        else:
+            _time.sleep(interval)
 
 
 if __name__ == "__main__":  # python -m happysmile.orchestrator

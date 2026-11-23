@@ -56,10 +56,13 @@ class Settings:
     calendar_api_url: str
     calendar_api_token: str
     dedupe_hours: int
+    # Hosting (Railway): run the call worker inside the web process; staff password for a public demo
+    run_worker: bool
+    demo_staff_password: str
 
     @property
     def browser_calls(self) -> bool:
-        """Dev-only demo: the assistant 'calls' the patient's browser instead of a phone."""
+        """Demo only (dev or APP_ENV=demo): the assistant 'calls' the patient's browser instead of a phone."""
         return self.telephony_provider == "browser" and not self.is_production_like
 
     @property
@@ -120,7 +123,20 @@ def get_settings() -> Settings:
         calendar_api_url=os.environ.get("CALENDAR_API_URL", ""),
         calendar_api_token=os.environ.get("CALENDAR_API_TOKEN", ""),
         dedupe_hours=int(os.environ.get("DEDUPE_HOURS", "24")),
+        run_worker=_bool("RUN_WORKER", False),
+        demo_staff_password=os.environ.get("DEMO_STAFF_PASSWORD", ""),
     )
+    if s.env == "demo":
+        # A public demo site (e.g. Railway + Vercel): synthetic data, browser calls allowed, but real secrets.
+        problems = []
+        if s.ip_hash_salt == "dev-only-salt":
+            problems.append("IP_HASH_SALT must be set to a random value")
+        if len(s.demo_staff_password) < 10:
+            problems.append("DEMO_STAFF_PASSWORD (10+ characters) must be set: the published dev passwords would let anyone in")
+        if "127.0.0.1" in s.database_url or "localhost" in s.database_url:
+            problems.append("DATABASE_URL points at a local database")
+        if problems:
+            raise RuntimeError("Refusing to start the demo site: " + "; ".join(problems))
     if s.is_production_like:
         problems = []
         if s.ip_hash_salt == "dev-only-salt":
